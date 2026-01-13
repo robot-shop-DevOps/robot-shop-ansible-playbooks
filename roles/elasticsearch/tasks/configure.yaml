@@ -1,8 +1,10 @@
 - name: Conifgure elasticsearch.yaml
-  ansible.builtin.template:
-    src: elasticsearch-yaml.j2
-    dest: /etc/elasticsearch/elasticsearch.yml
-    owner: root
-    group: elasticsearch
-    mode: '640'
+  ansible.builtin.blockinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: true
+    backup: true
+    block: |
+      cluster.name: {{ cluster_name }}
+      node.name: {{ node_name }}
+      discovery.type: {{ discovery_type }}
   notify: Restart elasticsearch
