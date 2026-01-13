@@ -1,0 +1,28 @@
+name: Validate and Run Ansible playbooks
+
+on:
+  workflow_dispatch:
+    inputs:
+      ANSIBLE_COMMAND:
+        required: true
+        description: "Dry run or Apply ansible playbooks"
+        type: choice
+        options:
+          - dry_run
+          - run
+
+      PLAYBOOK_PATH:
+        required: true
+        description: "Which playbook to run"
+        type: choice
+        options:
+          - ./playbooks/elasticsearch.yaml
+
+jobs:
+  deploy:
+    uses: "robot-shop-DevOps/robot-shop-github-actions/blob/main/.github/workflows/ansible-playbooks.yaml@main"
+    with:
+      WORKING_DIR: ./
+      INVENTORY_DIR: ./inventories/dev
+      PLAYBOOK_PATH: ${{ github.event.inputs.PLAYBOOK_PATH }}
+      ANSIBLE_COMMAND: ${{ github.event.inputs.ANSIBLE_COMMAND }}
