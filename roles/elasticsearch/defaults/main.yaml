@@ -1,5 +1,6 @@
 elasticsearch_version: "9.2.3"
 cluster_name: "RobotShopDevMaster"
 node_name: "MasterNode1"
-network_host: "0.0.0.0"
+network_host: "127.0.0.1"
 http_port: 9200
+discovery_type: "single-node"
