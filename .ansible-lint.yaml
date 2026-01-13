@@ -4,4 +4,3 @@ exclude_paths:
   - inventories/
   - .git/
   - .venv/
-
