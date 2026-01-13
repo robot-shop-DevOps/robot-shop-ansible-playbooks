@@ -1,4 +1,4 @@
-profile: development
+profile: production
 
 exclude_paths:
   - inventories/
