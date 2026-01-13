@@ -1,7 +1,7 @@
 - name: Conifgure elasticsearch.yaml
   ansible.builtin.blockinfile:
     path: /etc/elasticsearch/elasticsearch.yml
-    state: true
+    state: present
     backup: true
     block: |
       cluster.name: {{ cluster_name }}
