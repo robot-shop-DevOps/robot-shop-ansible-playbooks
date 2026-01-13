@@ -1,0 +1,5 @@
+- name: Import the Elasticsearch PGP key
+  ansible.builtin.apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    keyring: /usr/share/keyrings/elasticsearch-keyring.gpg
+    state: present

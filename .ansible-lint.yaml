@@ -1,0 +1,6 @@
+profile: development
+
+exclude_paths:
+  - inventories/
+  - .git/
+  - .venv/
