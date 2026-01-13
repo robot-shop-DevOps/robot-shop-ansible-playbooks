@@ -1,0 +1,5 @@
+- name: Install apt-transport-https
+  ansible.builtin.apt:
+    name: apt-transport-https
+    update_cache: true
+    state: present
