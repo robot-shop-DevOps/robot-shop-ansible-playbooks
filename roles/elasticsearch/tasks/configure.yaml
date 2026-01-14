@@ -28,5 +28,12 @@
     state: present
     regexp: '^discovery.type:'
     line: 'discovery.type: {{ discovery_type }}'
-  notify: Restart elasticsearch
+  when: not ansible_check_mode
+
+- name: Remove cluster.initial_master_nodes key in elasticsearch.yml
+  ansible.builtin.lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^cluster.initial_master_nodes:'
+    state: absent
+  notify: Restart Elasticsearch
   when: not ansible_check_mode
