@@ -1,5 +1,3 @@
 elasticsearch_version: "9.2.3"
 cluster_name: "RobotShopDevMaster"
 node_name: "MasterNode1"
-
-discovery_type: "single-node"
