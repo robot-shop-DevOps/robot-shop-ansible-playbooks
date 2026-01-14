@@ -5,3 +5,7 @@ elasticsearch:
 kibana:
   hosts:
     WebServer:
+
+grafana:
+  hosts:
+    WebServer:

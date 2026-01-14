@@ -1,0 +1,5 @@
+- name: Import the Grafana GPG key
+  ansible.builtin.apt_key:
+    url: https://apt.grafana.com/gpg.key
+    keyring: /etc/apt/keyrings/
+    state: present 
