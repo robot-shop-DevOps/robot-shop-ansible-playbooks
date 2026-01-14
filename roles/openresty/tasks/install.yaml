@@ -1,5 +1,5 @@
 - name: Install Openresty
   ansible.builtin.apt:
-    name: openresty={{openresty_version}}
+    name: openresty
     update_cache: true
     state: present
