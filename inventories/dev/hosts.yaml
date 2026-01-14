@@ -1,3 +1,7 @@
 elasticsearch:
   hosts:
-    WebServer:      
+    WebServer:
+
+kibana:
+  hosts:
+    WebServer:
