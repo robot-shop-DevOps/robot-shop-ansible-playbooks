@@ -1,0 +1,7 @@
+- name: Import the Grafana GPG key
+  ansible.builtin.shell:
+    cmd: |
+      wget -q -O - https://packages.grafana.com/gpg.key \
+      | gpg --dearmor \
+      | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+    creates: /etc/apt/keyrings/grafana.gpg

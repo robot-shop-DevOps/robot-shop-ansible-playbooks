@@ -18,6 +18,7 @@ on:
         options:
           - ./playbooks/elasticsearch.yaml
           - ./playbooks/kibana.yaml
+          - ./playbooks/grafana.yaml
 
 jobs:
   deploy:

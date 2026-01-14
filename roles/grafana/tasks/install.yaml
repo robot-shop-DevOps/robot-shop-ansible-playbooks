@@ -1,0 +1,5 @@
+- name: Install Grafana
+  ansible.builtin.apt:
+    name: "grafana"
+    update_cache: true
+    state: present
