@@ -9,3 +9,7 @@ kibana:
 grafana:
   hosts:
     WebServer:
+
+openresty:
+  hosts:
+    WebServer:

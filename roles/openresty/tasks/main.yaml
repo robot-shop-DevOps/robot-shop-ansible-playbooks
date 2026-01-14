@@ -1,0 +1,5 @@
+- import_tasks: dependencies.yaml
+- import_tasks: gpg_key.yaml
+- import_tasks: repository.yaml
+- import_tasks: install.yaml
+- import_tasks: systemd.yaml

@@ -19,6 +19,7 @@ on:
           - ./playbooks/elasticsearch.yaml
           - ./playbooks/kibana.yaml
           - ./playbooks/grafana.yaml
+          - ./playbooks/openresty.yaml
 
 jobs:
   deploy:

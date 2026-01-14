@@ -1,0 +1,23 @@
+- name: Install wget
+  ansible.builtin.apt:
+    name: wget
+    update_cache: true
+    state: present
+
+- name: Install gnupg
+  ansible.builtin.apt:
+    name: gnupg
+    update_cache: true
+    state: present
+
+- name: Install ca-certificates
+  ansible.builtin.apt:
+    name: ca-certificates
+    update_cache: true
+    state: present
+
+- name: Install lsb-release
+  ansible.builtin.apt:
+    name: lsb-release
+    update_cache: true
+    state: present
