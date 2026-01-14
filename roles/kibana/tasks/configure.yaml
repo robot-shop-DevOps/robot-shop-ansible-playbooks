@@ -1,0 +1,8 @@
+- name: Conifgure server.host key in kibana.yml
+  ansible.builtin.lineinfile:
+    path: /etc/kibana/kibana.yml
+    state: present
+    regexp: '^server.host:'
+    line: 'server.host: {{ server_host }}'
+  when: not ansible_check_mode
+  notify: Restart kibana

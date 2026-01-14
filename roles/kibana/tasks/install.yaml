@@ -1,0 +1,5 @@
+- name: Install Kibana
+  ansible.builtin.apt:
+    name: "kibana={{ kibana_version }}"
+    update_cache: true
+    state: present

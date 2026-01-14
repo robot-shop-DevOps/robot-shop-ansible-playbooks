@@ -17,6 +17,7 @@ on:
         type: choice
         options:
           - ./playbooks/elasticsearch.yaml
+          - ./playbooks/kibana.yaml
 
 jobs:
   deploy:
