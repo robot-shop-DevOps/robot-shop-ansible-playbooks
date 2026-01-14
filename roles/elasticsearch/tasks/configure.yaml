@@ -35,5 +35,5 @@
     path: /etc/elasticsearch/elasticsearch.yml
     regexp: '^cluster.initial_master_nodes:'
     state: absent
-  notify: Restart Elasticsearch
+  notify: Restart elasticsearch
   when: not ansible_check_mode
