@@ -1,4 +1,4 @@
-- name: Conifgure cluster.name key in elasticsearch.yaml
+- name: Conifgure cluster.name key in elasticsearch.yml
   ansible.builtin.lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
     state: present
@@ -6,7 +6,7 @@
     line: 'cluster.name: {{ cluster_name }}'
   when: not ansible_check_mode
 
-- name: Conifgure node.name key in elasticsearch.yaml
+- name: Conifgure node.name key in elasticsearch.yml
   ansible.builtin.lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
     state: present
@@ -14,11 +14,19 @@
     line: 'node.name: {{ node_name }}'
   when: not ansible_check_mode
 
-- name: Conifgure network.host key in elasticsearch.yaml
+- name: Conifgure network.host key in elasticsearch.yml
   ansible.builtin.lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
     state: present
     regexp: '^network.host:'
     line: 'network.host: {{ network_host }}'
+  when: not ansible_check_mode
+
+- name: Conifgure discovery.type key in elasticsearch.yml
+  ansible.builtin.lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: present
+    regexp: '^discovery.type:'
+    line: 'discovery.type: {{ discovery_type }}'
   notify: Restart elasticsearch
   when: not ansible_check_mode

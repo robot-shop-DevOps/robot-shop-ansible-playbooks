@@ -3,3 +3,4 @@ cluster_name: "RobotShopDevMaster"
 node_name: "MasterNode1"
 
 network_host: "0.0.0.0"
+discovery_type: "single-node"
