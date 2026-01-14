@@ -1,10 +1,21 @@
-- name: Conifgure elasticsearch.yaml
-  ansible.builtin.blockinfile:
+- name: Conifgure cluster.name key in elasticsearch.yaml
+  ansible.builtin.lineinfile:
     path: /etc/elasticsearch/elasticsearch.yml
     state: present
-    backup: true
-    block: |
-      cluster.name: {{ cluster_name }}
-      node.name: {{ node_name }}
-      discovery.type: {{ discovery_type }}
+    regexp: '^cluster.name:'
+    line: 'cluster.name: {{ cluster_name }}'
+
+- name: Conifgure node.name key in elasticsearch.yaml
+  ansible.builtin.lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: present
+    regexp: '^node.name:'
+    line: 'node.name: {{ node_name }}'
+
+- name: Conifgure discovery.type key in elasticsearch.yaml
+  ansible.builtin.lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: present
+    regexp: '^discovery.type:'
+    line: 'discovery.type: {{ discovery_type }}'
   notify: Restart elasticsearch
