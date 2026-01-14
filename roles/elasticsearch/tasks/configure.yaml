@@ -12,5 +12,13 @@
     state: present
     regexp: '^node.name:'
     line: 'node.name: {{ node_name }}'
+  when: not ansible_check_mode
+
+- name: Conifgure network.host key in elasticsearch.yaml
+  ansible.builtin.lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    state: present
+    regexp: '^network.host:'
+    line: 'network.host: {{ network_host }}'
   notify: Restart elasticsearch
   when: not ansible_check_mode
