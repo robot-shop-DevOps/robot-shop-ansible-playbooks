@@ -1,11 +1,9 @@
-- name: Add OpenResty repository
+- name: Add OpenResty APT repository (Ubuntu 22+, amd64)
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_lsb.codename }} main"
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_distribution_release }} main"
     state: present
     filename: openresty
-  register: openresty_repo
 
-- name: Update apt cache if repo changed
+- name: Update APT cache
   ansible.builtin.apt:
     update_cache: yes
-  when: openresty_repo.changed
