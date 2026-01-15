@@ -1,5 +1,118 @@
-- name: Install and Configure Openresty
-  hosts: openresty
-  become: true
-  roles:
-    - openresty
+# - name: Install and Configure Openresty
+#   hosts: openresty
+#   become: true
+#   roles:
+#     - openresty
+
+---
+- name: Install OpenResty on Ubuntu 22+
+  hosts: all
+  become: yes
+  vars:
+    install_recommended: true  # Set to false to skip opm and restydoc packages
+  
+  tasks:
+    - name: Check if nginx is installed
+      command: systemctl is-active nginx
+      register: nginx_status
+      failed_when: false
+      changed_when: false
+
+    - name: Disable nginx if running
+      systemd:
+        name: nginx
+        enabled: no
+        state: stopped
+      when: nginx_status.rc == 0
+
+    - name: Install prerequisites for adding GPG keys
+      apt:
+        name:
+          - wget
+          - gnupg
+          - ca-certificates
+          - lsb-release
+        state: present
+        install_recommends: no
+        update_cache: yes
+
+    - name: Download OpenResty GPG key
+      get_url:
+        url: https://openresty.org/package/pubkey.gpg
+        dest: /tmp/openresty-pubkey.gpg
+        mode: '0644'
+
+    - name: Import OpenResty GPG key (Ubuntu 22+)
+      shell: |
+        gpg --dearmor -o /usr/share/keyrings/openresty.gpg < /tmp/openresty-pubkey.gpg
+      args:
+        creates: /usr/share/keyrings/openresty.gpg
+
+    - name: Add OpenResty APT repository (Ubuntu 22+, amd64)
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_distribution_release }} main"
+        state: present
+        filename: openresty
+
+    - name: Update APT cache after adding repository
+      apt:
+        update_cache: yes
+        cache_valid_time: 0
+
+    - name: Wait for repository metadata to be available
+      pause:
+        seconds: 2
+
+    - name: Check available OpenResty packages
+      shell: apt-cache madison openresty
+      register: openresty_versions
+      failed_when: false
+      changed_when: false
+
+    - name: Display available OpenResty versions
+      debug:
+        var: openresty_versions.stdout_lines
+      when: openresty_versions.rc == 0
+
+    - name: Attempt package list refresh if openresty not found
+      apt:
+        update_cache: yes
+        cache_valid_time: 0
+      when: openresty_versions.rc != 0 or openresty_versions.stdout == ""
+
+    - name: Install OpenResty with recommended packages
+      apt:
+        name: openresty
+        state: present
+        update_cache: yes
+      when: install_recommended
+      register: install_result
+      retries: 3
+      delay: 5
+      until: install_result is succeeded
+
+    - name: Install OpenResty without recommended packages
+      apt:
+        name: openresty
+        state: present
+        install_recommends: no
+        update_cache: yes
+      when: not install_recommended
+      register: install_result
+      retries: 3
+      delay: 5
+      until: install_result is succeeded
+
+    - name: Verify OpenResty installation
+      command: openresty -v
+      register: openresty_version
+      changed_when: false
+
+    - name: Display OpenResty version
+      debug:
+        var: openresty_version.stdout
+
+    - name: Clean up GPG key file
+      file:
+        path: /tmp/openresty-pubkey.gpg
+        state: absent
