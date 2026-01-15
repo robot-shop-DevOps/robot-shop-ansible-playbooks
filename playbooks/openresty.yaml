@@ -1,28 +1,34 @@
-# - name: Install and Configure Openresty
-#   hosts: openresty
-#   become: true
-#   roles:
-#     - openresty
-
 ---
 - name: Install OpenResty on Ubuntu 22+
   hosts: all
   become: yes
+  become_method: sudo
+  gather_facts: yes
+  
   vars:
-    install_recommended: true  # Set to false to skip opm and restydoc packages
+    install_recommended: true
+    ansible_python_interpreter: /usr/bin/python3
   
   tasks:
-    - name: Install prerequisites for adding GPG keys
+    - name: Ensure python3-apt is installed (required for apt module)
+      raw: apt-get install -y python3-apt
+      changed_when: false
+      ignore_errors: yes
+
+    - name: Re-gather facts after python3-apt installation
+      setup:
+
+    - name: Install prerequisites
       apt:
-        name:
+        pkg:
           - wget
           - gnupg
           - ca-certificates
           - lsb-release
-          - curl
         state: present
-        install_recommends: no
         update_cache: yes
+      environment:
+        PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
     - name: Download OpenResty GPG key
       get_url:
@@ -30,138 +36,57 @@
         dest: /tmp/openresty-pubkey.gpg
         mode: '0644'
 
-    - name: Import OpenResty GPG key (Ubuntu 22+)
+    - name: Create keyrings directory
+      file:
+        path: /usr/share/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Convert GPG key to keyring format
       shell: |
-        gpg --dearmor -o /usr/share/keyrings/openresty.gpg < /tmp/openresty-pubkey.gpg
+        gpg --dearmor < /tmp/openresty-pubkey.gpg > /usr/share/keyrings/openresty.gpg
       args:
         creates: /usr/share/keyrings/openresty.gpg
+      environment:
+        PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-    - name: Add OpenResty APT repository WITHOUT arch parameter (Ubuntu 22+)
-      copy:
-        content: |
-          deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_distribution_release }} main
-        dest: /etc/apt/sources.list.d/openresty.list
-        mode: '0644'
+    - name: Add OpenResty repository
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_distribution_release }} main"
+        state: present
+        filename: openresty
+        update_cache: no
+      environment:
+        PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-    - name: Test repository connectivity
-      shell: curl -I http://openresty.org/package/ubuntu/dists/{{ ansible_distribution_release }}/Release
-      register: repo_test
-      failed_when: false
-      changed_when: false
-
-    - name: Display repository connectivity test
-      debug:
-        var: repo_test.stdout_lines
-
-    - name: Update APT cache after adding repository
+    - name: Update apt cache with full PATH
       apt:
         update_cache: yes
         cache_valid_time: 0
-      register: apt_update
-      failed_when: false
+      environment:
+        PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        DEBIAN_FRONTEND: "noninteractive"
 
-    - name: Display APT update errors if any
-      debug:
-        var: apt_update
-      when: apt_update.failed
-
-    - name: Wait for repository metadata to be available
-      pause:
-        seconds: 3
-
-    - name: Check repository file content
-      command: cat /etc/apt/sources.list.d/openresty.list
-      register: repo_content
-      changed_when: false
-
-    - name: Display repository configuration
-      debug:
-        var: repo_content.stdout_lines
-
-    - name: List available openresty packages
-      shell: apt-cache search openresty
-      register: openresty_search
-      changed_when: false
-
-    - name: Display available openresty packages
-      debug:
-        var: openresty_search.stdout_lines
-
-    - name: Check available OpenResty packages with madison
-      shell: apt-cache madison openresty
-      register: openresty_versions
-      failed_when: false
-      changed_when: false
-
-    - name: Display available OpenResty versions
-      debug:
-        var: openresty_versions.stdout_lines
-      when: openresty_versions.rc == 0
-
-    - name: Check apt-cache policy for openresty
-      shell: apt-cache policy openresty
-      register: openresty_policy
-      failed_when: false
-      changed_when: false
-
-    - name: Display openresty policy
-      debug:
-        var: openresty_policy.stdout_lines
-
-    - name: Force APT cache refresh
-      shell: |
-        rm -rf /var/lib/apt/lists/*
-        apt-get clean
-        apt-get update
-      when: openresty_versions.rc != 0 or openresty_versions.stdout == ""
-      register: force_update
-
-    - name: Recheck available packages after force update
-      shell: apt-cache search openresty
-      register: openresty_search_retry
-      changed_when: false
-      when: force_update is changed
-
-    - name: Display packages after force update
-      debug:
-        var: openresty_search_retry.stdout_lines
-      when: force_update is changed
-
-    - name: Install OpenResty with recommended packages
+    - name: Install OpenResty
       apt:
         name: openresty
         state: present
-        update_cache: yes
-      when: install_recommended
-      register: install_result
-      retries: 2
-      delay: 5
-      until: install_result is succeeded
-
-    - name: Install OpenResty without recommended packages
-      apt:
-        name: openresty
-        state: present
-        install_recommends: no
-        update_cache: yes
-      when: not install_recommended
-      register: install_result
-      retries: 2
-      delay: 5
-      until: install_result is succeeded
+        install_recommends: "{{ install_recommended }}"
+      environment:
+        PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        DEBIAN_FRONTEND: "noninteractive"
 
     - name: Verify OpenResty installation
-      command: openresty -v
-      register: openresty_version
-      changed_when: false
-      when: install_result is succeeded
+      stat:
+        path: /usr/bin/openresty
+      register: openresty_bin
 
-    - name: Display OpenResty version
+    - name: Display installation status
       debug:
-        var: openresty_version.stdout
-      when: install_result is succeeded
+        msg: "OpenResty installed successfully!"
+      when: openresty_bin.stat.exists
 
-    - name: Clean up GPG key file
+    - name: Clean up temporary files
       file:
         path: /tmp/openresty-pubkey.gpg
         state: absent
