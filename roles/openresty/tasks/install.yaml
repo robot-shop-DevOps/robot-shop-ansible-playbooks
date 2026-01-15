@@ -1,3 +1,20 @@
+- name: Show OpenResty repo file
+  ansible.builtin.command: cat /etc/apt/sources.list.d/openresty.list
+  changed_when: false
+
+- name: Show APT sources that mention openresty
+  ansible.builtin.command: grep -R openresty /etc/apt/
+  changed_when: false
+
+- name: Show openresty availability
+  ansible.builtin.command: apt-cache policy openresty
+  changed_when: false
+
+- name: Show raw Packages index (if any)
+  ansible.builtin.shell: |
+    ls -l /var/lib/apt/lists | grep openresty || true
+  changed_when: false
+
 - name: Install Openresty
   ansible.builtin.apt:
     name: openresty
