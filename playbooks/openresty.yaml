@@ -19,6 +19,7 @@
           - gnupg
           - ca-certificates
           - lsb-release
+          - curl
         state: present
         install_recommends: no
         update_cache: yes
@@ -35,22 +36,58 @@
       args:
         creates: /usr/share/keyrings/openresty.gpg
 
-    - name: Add OpenResty APT repository (Ubuntu 22+, amd64)
-      apt_repository:
-        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_distribution_release }} main"
-        state: present
-        filename: openresty
+    - name: Add OpenResty APT repository WITHOUT arch parameter (Ubuntu 22+)
+      copy:
+        content: |
+          deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_distribution_release }} main
+        dest: /etc/apt/sources.list.d/openresty.list
+        mode: '0644'
+
+    - name: Test repository connectivity
+      shell: curl -I http://openresty.org/package/ubuntu/dists/{{ ansible_distribution_release }}/Release
+      register: repo_test
+      failed_when: false
+      changed_when: false
+
+    - name: Display repository connectivity test
+      debug:
+        var: repo_test.stdout_lines
 
     - name: Update APT cache after adding repository
       apt:
         update_cache: yes
         cache_valid_time: 0
+      register: apt_update
+      failed_when: false
+
+    - name: Display APT update errors if any
+      debug:
+        var: apt_update
+      when: apt_update.failed
 
     - name: Wait for repository metadata to be available
       pause:
-        seconds: 2
+        seconds: 3
 
-    - name: Check available OpenResty packages
+    - name: Check repository file content
+      command: cat /etc/apt/sources.list.d/openresty.list
+      register: repo_content
+      changed_when: false
+
+    - name: Display repository configuration
+      debug:
+        var: repo_content.stdout_lines
+
+    - name: List available openresty packages
+      shell: apt-cache search openresty
+      register: openresty_search
+      changed_when: false
+
+    - name: Display available openresty packages
+      debug:
+        var: openresty_search.stdout_lines
+
+    - name: Check available OpenResty packages with madison
       shell: apt-cache madison openresty
       register: openresty_versions
       failed_when: false
@@ -61,11 +98,34 @@
         var: openresty_versions.stdout_lines
       when: openresty_versions.rc == 0
 
-    - name: Attempt package list refresh if openresty not found
-      apt:
-        update_cache: yes
-        cache_valid_time: 0
+    - name: Check apt-cache policy for openresty
+      shell: apt-cache policy openresty
+      register: openresty_policy
+      failed_when: false
+      changed_when: false
+
+    - name: Display openresty policy
+      debug:
+        var: openresty_policy.stdout_lines
+
+    - name: Force APT cache refresh
+      shell: |
+        rm -rf /var/lib/apt/lists/*
+        apt-get clean
+        apt-get update
       when: openresty_versions.rc != 0 or openresty_versions.stdout == ""
+      register: force_update
+
+    - name: Recheck available packages after force update
+      shell: apt-cache search openresty
+      register: openresty_search_retry
+      changed_when: false
+      when: force_update is changed
+
+    - name: Display packages after force update
+      debug:
+        var: openresty_search_retry.stdout_lines
+      when: force_update is changed
 
     - name: Install OpenResty with recommended packages
       apt:
@@ -74,7 +134,7 @@
         update_cache: yes
       when: install_recommended
       register: install_result
-      retries: 3
+      retries: 2
       delay: 5
       until: install_result is succeeded
 
@@ -86,7 +146,7 @@
         update_cache: yes
       when: not install_recommended
       register: install_result
-      retries: 3
+      retries: 2
       delay: 5
       until: install_result is succeeded
 
@@ -94,10 +154,12 @@
       command: openresty -v
       register: openresty_version
       changed_when: false
+      when: install_result is succeeded
 
     - name: Display OpenResty version
       debug:
         var: openresty_version.stdout
+      when: install_result is succeeded
 
     - name: Clean up GPG key file
       file:
