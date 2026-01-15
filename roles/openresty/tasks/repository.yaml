@@ -1,6 +1,6 @@
 - name: Add OpenResty repository
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/openresty.gpg] https://openresty.org/package/ubuntu {{ ansible_lsb.codename }} main"
+    repo: "deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_lsb.codename }} main"
     state: present
     filename: openresty
   register: openresty_repo
