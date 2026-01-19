@@ -1,6 +1,7 @@
 - name: Import the Openresty GPG key
   ansible.builtin.shell:
     cmd: |
-      wget -O - https://openresty.org/package/pubkey.gpg \
-      | sudo gpg --dearmor -o /usr/share/keyrings/openresty.gpg
+      wget -q -O - https://openresty.org/package/pubkey.gpg \
+      | gpg --dearmor \
+      | tee /usr/share/keyrings/openresty.gpg > /dev/null
     creates: /usr/share/keyrings/openresty.gpg
