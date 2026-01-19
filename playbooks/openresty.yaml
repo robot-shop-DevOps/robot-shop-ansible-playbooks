@@ -8,13 +8,6 @@
     install_recommended: true
   
   tasks:
-    - name: Stop and disable nginx if it exists
-      systemd:
-        name: nginx
-        enabled: no
-        state: stopped
-      ignore_errors: yes
-
     - name: Install prerequisites
       apt:
         pkg:
@@ -26,28 +19,41 @@
         update_cache: yes
 
     - name: Download OpenResty GPG key
-      get_url:
-        url: https://openresty.org/package/pubkey.gpg
-        dest: /tmp/openresty-pubkey.gpg
-        mode: '0644'
+      shell: wget -O /tmp/openresty-pubkey.gpg https://openresty.org/package/pubkey.gpg
+      args:
+        creates: /tmp/openresty-pubkey.gpg
+      check_mode: no
+
+    - name: Debug - Check if GPG key was downloaded
+      stat:
+        path: /tmp/openresty-pubkey.gpg
+      register: gpg_key_stat
+      check_mode: no
+
+    - name: Debug - Display GPG key file status
+      debug:
+        msg: "GPG key exists: {{ gpg_key_stat.stat.exists }}"
 
     - name: Create keyrings directory
       file:
         path: /usr/share/keyrings
         state: directory
         mode: '0755'
+      check_mode: no
 
     - name: Import OpenResty GPG key
       command: gpg --dearmor -o /usr/share/keyrings/openresty.gpg /tmp/openresty-pubkey.gpg
       args:
         creates: /usr/share/keyrings/openresty.gpg
       check_mode: no
+      when: gpg_key_stat.stat.exists
 
     - name: Add OpenResty repository
       copy:
         content: "deb [signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu {{ ansible_distribution_release }} main\n"
         dest: /etc/apt/sources.list.d/openresty.list
         mode: '0644'
+      check_mode: no
 
     - name: Update apt cache
       apt:
