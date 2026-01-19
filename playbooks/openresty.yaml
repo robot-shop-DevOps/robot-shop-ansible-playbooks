@@ -8,15 +8,22 @@
     install_recommended: true
   
   tasks:
-    - name: Install prerequisites using shell
-      shell: |
-        export DEBIAN_FRONTEND=noninteractive
-        apt-get update
-        apt-get install -y --no-install-recommends wget gnupg ca-certificates lsb-release
-      args:
-        executable: /bin/bash
-      register: prereq_result
-      changed_when: "'0 newly installed' not in prereq_result.stdout"
+    - name: Stop and disable nginx if it exists
+      systemd:
+        name: nginx
+        enabled: no
+        state: stopped
+      ignore_errors: yes
+
+    - name: Install prerequisites
+      apt:
+        pkg:
+          - wget
+          - gnupg
+          - ca-certificates
+          - lsb-release
+        state: present
+        update_cache: yes
 
     - name: Download OpenResty GPG key
       get_url:
@@ -31,11 +38,10 @@
         mode: '0755'
 
     - name: Import OpenResty GPG key
-      shell: |
-        gpg --dearmor < /tmp/openresty-pubkey.gpg > /usr/share/keyrings/openresty.gpg
+      command: gpg --dearmor -o /usr/share/keyrings/openresty.gpg /tmp/openresty-pubkey.gpg
       args:
         creates: /usr/share/keyrings/openresty.gpg
-        executable: /bin/bash
+      check_mode: no
 
     - name: Add OpenResty repository
       copy:
@@ -43,52 +49,41 @@
         dest: /etc/apt/sources.list.d/openresty.list
         mode: '0644'
 
-    - name: Update apt cache after adding repository
-      shell: |
-        apt-get clean
-        rm -rf /var/lib/apt/lists/*
-        apt-get update
-      args:
-        executable: /bin/bash
-      register: apt_update_result
-      changed_when: true
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 0
+      check_mode: no
 
-    - name: Verify openresty package is available
-      shell: apt-cache policy openresty
-      register: openresty_check
-      changed_when: false
-      failed_when: false
-
-    - name: Show openresty availability
-      debug:
-        var: openresty_check.stdout_lines
-
-    - name: Install OpenResty using apt-get (with recommended packages)
-      shell: |
-        export DEBIAN_FRONTEND=noninteractive
-        apt-get install -y openresty
-      args:
-        executable: /bin/bash
+    - name: Install OpenResty with recommended packages
+      apt:
+        name: openresty
+        state: present
+        install_recommends: yes
+        update_cache: yes
       when: install_recommended
-      register: install_result
+      check_mode: no
 
-    - name: Install OpenResty using apt-get (without recommended packages)
-      shell: |
-        export DEBIAN_FRONTEND=noninteractive
-        apt-get install -y --no-install-recommends openresty
-      args:
-        executable: /bin/bash
+    - name: Install OpenResty without recommended packages
+      apt:
+        name: openresty
+        state: present
+        install_recommends: no
+        update_cache: yes
       when: not install_recommended
-      register: install_result
+      check_mode: no
 
     - name: Verify OpenResty installation
-      shell: openresty -v
+      command: openresty -v
       register: version_check
       changed_when: false
+      failed_when: false
+      check_mode: no
 
     - name: Display OpenResty version
       debug:
-        msg: "{{ version_check.stderr }}"
+        msg: "OpenResty installed: {{ version_check.stderr }}"
+      when: version_check.rc == 0
 
     - name: Clean up temporary files
       file:
