@@ -1,2 +1,2 @@
 enable_httplua: true
-httplua_owner: 'WebServer'
+openresty_config_owner: 'WebServer'
