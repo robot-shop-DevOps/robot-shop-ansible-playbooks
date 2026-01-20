@@ -1,0 +1,16 @@
+- name: Create directory for httplua
+  ansible.builtin.file:
+    path: /usr/local/openresty/nginx/conf/tmp/lua/
+    owner: root
+    group: root
+    mode: '0774'
+    state: directory
+  when: enable_httplua
+
+- name: Create directory for httplua for validation
+  ansible.builtin.file:
+    path: /home/WebServer/openresty-tmp/lua/
+    owner: "{{ httplua_owner }}"
+    mode: '0774'
+    state: directory
+  when: enable_httplua
