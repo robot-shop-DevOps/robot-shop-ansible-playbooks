@@ -1,3 +1,18 @@
+- name: Create directory for nginx
+  ansible.builtin.file:
+    path: /usr/local/openresty/nginx/conf/tmp/nginx/
+    owner: root
+    group: root
+    mode: '0774'
+    state: directory
+
+- name: Create directory for nginx for validation
+  ansible.builtin.file:
+    path: /home/{{ openresty_config_owner }}/openresty-tmp/nginx/
+    owner: "{{ openresty_config_owner }}"
+    mode: '0774'
+    state: directory
+
 - name: Create directory for httplua
   ansible.builtin.file:
     path: /usr/local/openresty/nginx/conf/tmp/lua/
@@ -9,8 +24,8 @@
 
 - name: Create directory for httplua for validation
   ansible.builtin.file:
-    path: /home/WebServer/openresty-tmp/lua/
-    owner: "{{ httplua_owner }}"
+    path: /home/{{ openresty_config_owner }}/openresty-tmp/lua/
+    owner: "{{ openresty_config_owner }}"
     mode: '0774'
     state: directory
   when: enable_httplua
