@@ -10,7 +10,7 @@
     path: /usr/local/openresty/nginx/conf/lua/
     owner: root
     group: root
-    mode: '0774'
+    mode: '0775'
     state: directory
   when: enable_httplua
 
