@@ -1,0 +1,6 @@
+- name: Create directory for nginx for validation
+  ansible.builtin.file:
+    path: /home/{{ openresty_config_owner }}/openresty-tmp/nginx/
+    owner: "{{ openresty_config_owner }}"
+    mode: '0774'
+    state: directory
