@@ -16,15 +16,23 @@ on:
         description: "Which playbook to run"
         type: choice
         options:
-          - ./playbooks/elasticsearch.yaml
-          - ./playbooks/kibana.yaml
-          - ./playbooks/grafana.yaml
-          - ./playbooks/openresty.yaml
+          - ./playbooks/elasticsearch/elasticsearch.yaml
+          - ./playbooks/kibana/kibana.yaml
+          - ./playbooks/grafana/grafana.yaml
+          - ./playbooks/openresty/openresty.yaml
+          - ./playbooks/certbot/certbot.yaml
 
       REQUIREMENTS_FILE_PATH:
         required: false
         description: "Requirements file"
-        type: string
+        type: choice
+        options:
+          - ''
+          - ./playbooks/elasticsearch/requirements.yaml
+          - ./playbooks/kibana/requirements.yaml
+          - ./playbooks/grafana/requirements.yaml
+          - ./playbooks/openresty/requirements.yaml
+          - ./playbooks/certbot/requirements.yaml
         default: ''
 
       ANSIBLE_GALAXY_COLLECTIONS_PATH:
