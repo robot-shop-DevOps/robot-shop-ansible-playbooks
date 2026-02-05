@@ -21,6 +21,23 @@ on:
           - ./playbooks/grafana.yaml
           - ./playbooks/openresty.yaml
 
+      REQUIREMENTS_FILE_PATH:
+        required: false
+        description: "Requirements file"
+        type: string
+        default: ''
+
+      ANSIBLE_GALAXY_COLLECTIONS_PATH:
+        required: false
+        type: string
+        default: ./collections
+
+      ANSIBLE_GALAXY_ROLES_PATH:
+        required: false
+        type: string
+        default: ./roles
+
+
 jobs:
   deploy:
     uses: robot-shop-DevOps/robot-shop-github-actions/.github/workflows/ansible-playbooks.yaml@main
@@ -29,3 +46,6 @@ jobs:
       INVENTORY_DIR: ./inventories/dev
       PLAYBOOK_PATH: ${{ github.event.inputs.PLAYBOOK_PATH }}
       ANSIBLE_COMMAND: ${{ github.event.inputs.ANSIBLE_COMMAND }}
+      REQUIREMENTS_FILE_PATH: ${{ github.event.inputs.REQUIREMENTS_FILE_PATH }}
+      ANSIBLE_GALAXY_COLLECTIONS_PATH: ${{ github.event.inputs.ANSIBLE_GALAXY_COLLECTIONS_PATH }}
+      ANSIBLE_GALAXY_ROLES_PATH: ${{ github.event.inputs.ANSIBLE_GALAXY_ROLES_PATH }}

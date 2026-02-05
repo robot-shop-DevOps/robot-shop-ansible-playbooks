@@ -1,0 +1,7 @@
+- name: Install and configure certbot
+  hosts: certbot
+  collections:
+    - community.general
+  become: true
+  roles:
+    - "certbot"

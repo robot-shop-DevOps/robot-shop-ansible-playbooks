@@ -13,3 +13,7 @@ grafana:
 openresty:
   hosts:
     WebServer:
+
+certbot:
+  hosts:
+    WebServer:

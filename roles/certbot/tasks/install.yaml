@@ -1,0 +1,6 @@
+- name: Install certbot
+  community.general.snap:
+    name: certbot
+    state: present
+    classic: true
+    channel: '{{ certbot_channel }}'
