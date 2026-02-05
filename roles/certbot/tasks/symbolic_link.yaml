@@ -5,3 +5,4 @@
     state: link
     owner: root
     group: root
+  when: not ansible_check_mode
