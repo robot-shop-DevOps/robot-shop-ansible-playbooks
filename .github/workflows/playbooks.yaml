@@ -3,6 +3,13 @@ name: Validate and Run Ansible playbooks
 on:
   workflow_dispatch:
     inputs:
+      ENVIRONMENT:
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
       ANSIBLE_COMMAND:
         required: true
         description: "Dry run or Apply ansible playbooks"
@@ -11,49 +18,21 @@ on:
           - dry_run
           - run
 
-      PLAYBOOK_PATH:
+      PLAYBOOK:
         required: true
         description: "Which playbook to run"
         type: choice
         options:
-          - ./playbooks/elasticsearch/elasticsearch.yaml
-          - ./playbooks/kibana/kibana.yaml
-          - ./playbooks/grafana/grafana.yaml
-          - ./playbooks/openresty/openresty.yaml
-          - ./playbooks/certbot/certbot.yaml
-
-      REQUIREMENTS_FILE_PATH:
-        required: false
-        description: "Requirements file"
-        type: choice
-        options:
-          - ''
-          - ./playbooks/elasticsearch/requirements.yaml
-          - ./playbooks/kibana/requirements.yaml
-          - ./playbooks/grafana/requirements.yaml
-          - ./playbooks/openresty/requirements.yaml
-          - ./playbooks/certbot/requirements.yaml
-        default: ''
-
-      ANSIBLE_GALAXY_COLLECTIONS_PATH:
-        required: false
-        type: string
-        default: ./collections
-
-      ANSIBLE_GALAXY_ROLES_PATH:
-        required: false
-        type: string
-        default: ./roles
-
+          - elasticsearch
+          - kibana
+          - grafana
+          - openresty
+          - certbot
 
 jobs:
   deploy:
     uses: robot-shop-DevOps/robot-shop-github-actions/.github/workflows/ansible-playbooks.yaml@main
     with:
-      WORKING_DIR: ./
-      INVENTORY_DIR: ./inventories/dev
-      PLAYBOOK_PATH: ${{ github.event.inputs.PLAYBOOK_PATH }}
+      ENVIRONMENT: ${{ github.event.inputs.ENVIRONMENT }}
       ANSIBLE_COMMAND: ${{ github.event.inputs.ANSIBLE_COMMAND }}
-      REQUIREMENTS_FILE_PATH: ${{ github.event.inputs.REQUIREMENTS_FILE_PATH }}
-      ANSIBLE_GALAXY_COLLECTIONS_PATH: ${{ github.event.inputs.ANSIBLE_GALAXY_COLLECTIONS_PATH }}
-      ANSIBLE_GALAXY_ROLES_PATH: ${{ github.event.inputs.ANSIBLE_GALAXY_ROLES_PATH }}
+      PLAYBOOK: ${{ github.event.inputs.PLAYBOOK }}
