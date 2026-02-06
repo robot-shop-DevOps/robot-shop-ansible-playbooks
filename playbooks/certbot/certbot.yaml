@@ -1,4 +1,4 @@
-- name: Install and configure certbot
+- name: Install and configure Certbot
   hosts: certbot
   become: true
   roles:
