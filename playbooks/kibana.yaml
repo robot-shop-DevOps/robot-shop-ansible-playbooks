@@ -1,5 +1,0 @@
-- name: Install and Configure Kibana
-  hosts: kibana
-  become: true
-  roles:
-    - kibana

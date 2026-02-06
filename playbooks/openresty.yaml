@@ -1,5 +1,0 @@
-- name: Install and Configure Openresty
-  hosts: openresty
-  become: true
-  roles:
-    - openresty

@@ -3,6 +3,13 @@ name: Validate and Run Ansible playbooks
 on:
   workflow_dispatch:
     inputs:
+      ENVIRONMENT:
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
       ANSIBLE_COMMAND:
         required: true
         description: "Dry run or Apply ansible playbooks"
@@ -11,21 +18,21 @@ on:
           - dry_run
           - run
 
-      PLAYBOOK_PATH:
+      PLAYBOOK:
         required: true
         description: "Which playbook to run"
         type: choice
         options:
-          - ./playbooks/elasticsearch.yaml
-          - ./playbooks/kibana.yaml
-          - ./playbooks/grafana.yaml
-          - ./playbooks/openresty.yaml
+          - elasticsearch
+          - kibana
+          - grafana
+          - openresty
+          - certbot
 
 jobs:
   deploy:
     uses: robot-shop-DevOps/robot-shop-github-actions/.github/workflows/ansible-playbooks.yaml@main
     with:
-      WORKING_DIR: ./
-      INVENTORY_DIR: ./inventories/dev
-      PLAYBOOK_PATH: ${{ github.event.inputs.PLAYBOOK_PATH }}
+      ENVIRONMENT: ${{ github.event.inputs.ENVIRONMENT }}
       ANSIBLE_COMMAND: ${{ github.event.inputs.ANSIBLE_COMMAND }}
+      PLAYBOOK: ${{ github.event.inputs.PLAYBOOK }}

@@ -1,0 +1,8 @@
+- name: Create symbolic link
+  ansible.builtin.file:
+    src: /snap/bin/certbot
+    dest: /usr/local/bin/certbot
+    state: link
+    owner: root
+    group: root
+  when: not ansible_check_mode
