@@ -3,6 +3,13 @@ name: Validate and Run Ansible playbooks
 on:
   workflow_dispatch:
     inputs:
+      CLOUD_PROVIDER:
+        required: true
+        type: choice
+        options:
+          - azure
+          - aws
+
       ENVIRONMENT:
         required: true
         type: choice
@@ -30,7 +37,7 @@ on:
 
       PLAYBOOK:
         required: true
-        description: "Which playbook to run"
+        description: "Playbook to run"
         type: choice
         options:
           - elasticsearch
@@ -44,6 +51,7 @@ jobs:
   deploy:
     uses: robot-shop-DevOps/robot-shop-github-actions/.github/workflows/ansible-playbooks.yaml@main
     with:
+      CLOUD_PROVIDER: ${{ github.event.inputs.CLOUD_PROVIDER }}
       ENVIRONMENT: ${{ github.event.inputs.ENVIRONMENT }}
       ANSIBLE_COMMAND: ${{ github.event.inputs.ANSIBLE_COMMAND }}
       PLAYBOOK: ${{ github.event.inputs.PLAYBOOK }}
