@@ -1,0 +1,11 @@
+- name: Install openssl
+  ansible.builtin.apt:
+    name: openssl
+    update_cache: true
+    state: present
+
+- name: Create cerificate directory
+  ansible.builtin.file:
+    path: "{{ certificate_dir }}"
+    mode: 0755
+    state: directory

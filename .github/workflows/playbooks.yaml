@@ -18,6 +18,16 @@ on:
           - dry_run
           - run
 
+      ANSIBLE_EXTRA_ARGS:
+        required: false
+        type: string
+        default: ""
+
+      ANSIBLE_VARS_FILE:
+        required: false
+        type: string
+        default: ""
+
       PLAYBOOK:
         required: true
         description: "Which playbook to run"
@@ -28,6 +38,7 @@ on:
           - grafana
           - openresty
           - certbot
+          - certificate_renewal
 
 jobs:
   deploy:
@@ -36,3 +47,6 @@ jobs:
       ENVIRONMENT: ${{ github.event.inputs.ENVIRONMENT }}
       ANSIBLE_COMMAND: ${{ github.event.inputs.ANSIBLE_COMMAND }}
       PLAYBOOK: ${{ github.event.inputs.PLAYBOOK }}
+      ANSIBLE_EXTRA_ARGS: ${{ github.event.inputs.ANSIBLE_EXTRA_ARGS }}
+      ANSIBLE_VARS_FILE: ${{ github.event.inputs.ANSIBLE_VARS_FILE }}
+    secrets: inherit

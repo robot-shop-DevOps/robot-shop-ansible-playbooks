@@ -1,0 +1,37 @@
+- name: Get certificate (dry run)
+  ansible.builtin.command:
+    cmd: >
+      certbot certonly 
+      --csr {{ certificate_dir }}/{{ csr_file_name }} 
+      --webroot
+      --webroot-path {{ webroot_path }}
+      --dry-run
+      --non-interactive
+      --config-dir {{ certbot_config_dir }}
+      --work-dir {{ certbot_work_dir }}
+      --logs-dir {{ certbot_logs_dir }}
+  check_mode: false
+  when: ansible_check_mode
+
+- name: Get Certificate
+  ansible.builtin.command:
+    cmd: >
+      certbot certonly 
+      --csr {{ certificate_dir }}/{{ csr_file_name }} 
+      --webroot
+      --webroot-path {{ webroot_path }}
+      --cert-path {{ certificate_dir }}/{{ certificate_name }}
+      --chain-path {{ chain_path }}/{{ chain_name }}
+      --fullchain-path {{ fullchain_path }}/{{ fullchain_name }}
+      --non-interactive
+      --config-dir {{ certbot_config_dir }}
+      --work-dir {{ certbot_work_dir }}
+      --logs-dir {{ certbot_logs_dir }}
+
+- name: Export certificate to azure vault
+  azure.azcollection.azure_rm_keyvaultsecret:
+    keyvault_uri: "{{ azure_key_vault_uri }}"
+    secret_name: "{{ azure_vault_certificate_name }}"
+    secret_value: "{{ lookup('file', certificate_dir + '/' + certificate_name) }}"
+    state: present
+  no_log: true

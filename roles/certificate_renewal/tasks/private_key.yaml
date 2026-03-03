@@ -1,0 +1,14 @@
+- name: Generate private key
+  ansible.builtin.command:
+    cmd: openssl genrsa -out {{ certificate_dir }}/{{ private_key_name }} {{ default_bits }}
+  args:
+    creates: "{{ certificate_dir }}/{{ private_key_name }}"
+  register: command_output
+
+- name: Export private key to azure vault
+  azure.azcollection.azure_rm_keyvaultsecret:
+    keyvault_uri: "{{ azure_key_vault_uri }}"
+    secret_name: "{{ azure_vault_private_key_name }}"
+    secret_value: "{{ lookup('file', certificate_dir + '/' + private_key_name) }}"
+    state: present
+  no_log: true

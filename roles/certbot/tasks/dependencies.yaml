@@ -3,3 +3,13 @@
     name: snapd
     update_cache: true
     state: present
+
+- name: Create certbot directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ certbot_config_dir }}"
+    - "{{ certbot_work_dir }}"
+    - "{{ certbot_logs_dir }}"

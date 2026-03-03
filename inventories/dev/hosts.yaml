@@ -17,3 +17,7 @@ openresty:
 certbot:
   hosts:
     WebServer:
+
+certificate_renewal:
+  hosts:
+    WebServer:
