@@ -1,5 +1,7 @@
 azure_vault_private_key_name: "robotshopappinkey"
 azure_vault_certificate_name: "robotshopappin_cert"
+azure_vault_fullchain_name: "robotshopappin_fullchain"
+azure_vault_chain_name: "robotshopappin_chain"
 
 private_key_name: "robotshopappin.key"
 csr_file_name: "robotshopappin_csr"

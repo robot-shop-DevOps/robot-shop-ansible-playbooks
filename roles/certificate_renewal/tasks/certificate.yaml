@@ -6,8 +6,8 @@
       --webroot
       --webroot-path {{ webroot_path }}
       --cert-path {{ certificate_dir }}/{{ certificate_name }}
-      --chain-path {{ chain_path }}/{{ chain_name }}
-      --fullchain-path {{ fullchain_path }}/{{ fullchain_name }}
+      --chain-path {{ certificate_dir }}/{{ chain_name }}
+      --fullchain-path {{ certificate_dir }}/{{ fullchain_name }}
       --non-interactive
       --config-dir {{ certbot_config_dir }}
       --work-dir {{ certbot_work_dir }}
@@ -20,5 +20,21 @@
     keyvault_uri: "{{ azure_key_vault_uri }}"
     secret_name: "{{ azure_vault_certificate_name }}"
     secret_value: "{{ lookup('file', certificate_dir + '/' + certificate_name) }}"
+    state: present
+  when: not ansible_check_mode
+
+- name: Export fullchain to azure vault
+  azure.azcollection.azure_rm_keyvaultsecret:
+    keyvault_uri: "{{ azure_key_vault_uri }}"
+    secret_name: "{{ azure_vault_fullchain_name }}"
+    secret_value: "{{ lookup('file', certificate_dir + '/' + fullchain_name) }}"
+    state: present
+  when: not ansible_check_mode
+
+- name: Export chain to azure vault
+  azure.azcollection.azure_rm_keyvaultsecret:
+    keyvault_uri: "{{ azure_key_vault_uri }}"
+    secret_name: "{{ azure_vault_chain_name }}"
+    secret_value: "{{ lookup('file', certificate_dir + '/' + chain_name) }}"
     state: present
   when: not ansible_check_mode
