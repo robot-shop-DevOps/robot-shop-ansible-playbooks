@@ -11,6 +11,12 @@
   register: private_key_content
   when: not ansible_check_mode
 
+- name: Show python interpreter
+  debug:
+    var: ansible_python_interpreter
+  delegate_to: localhost
+  run_once: true
+
 - name: Export private key to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
