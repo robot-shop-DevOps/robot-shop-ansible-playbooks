@@ -16,6 +16,6 @@ CN = {{ CN }}
 subjectAltName = @alt_names
 
 [ alt_names ]
-{{% for domain in san_domains -% }}
+{% for domain in san_domains -%}
 DNS.{{ loop.index }} = {{ domain }}
-{{ % endfor -% }}
+{% endfor -%}
