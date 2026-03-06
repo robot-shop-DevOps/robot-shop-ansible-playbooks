@@ -13,11 +13,26 @@
       --work-dir {{ certbot_work_dir }}
       --logs-dir {{ certbot_logs_dir }}
 
+- name: Read certificate
+  ansible.builtin.slurp:
+    src: "{{ certificate_dir }}/{{ certificate_name }}"
+  register: cert_content
+
+- name: Read fullchain
+  ansible.builtin.slurp:
+    src: "{{ certificate_dir }}/{{ fullchain_name }}"
+  register: fullchain_content
+
+- name: Read chain
+  ansible.builtin.slurp:
+    src: "{{ certificate_dir }}/{{ certificate_name }}"
+  register: chain_content
+
 - name: Export certificate to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
     secret_name: "{{ azure_vault_certificate_name }}"
-    secret_value: "{{ lookup('file', certificate_dir + '/' + certificate_name) }}"
+    secret_value: "{{ cert_content.content + | b64decode }}"
     state: present
   when: not ansible_check_mode
 
@@ -25,7 +40,7 @@
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
     secret_name: "{{ azure_vault_fullchain_name }}"
-    secret_value: "{{ lookup('file', certificate_dir + '/' + fullchain_name) }}"
+    secret_value: "{{ fullchain_content.content + | b64decode }}"
     state: present
   when: not ansible_check_mode
 
@@ -33,6 +48,6 @@
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
     secret_name: "{{ azure_vault_chain_name }}"
-    secret_value: "{{ lookup('file', certificate_dir + '/' + chain_name) }}"
+    secret_value: "{{ chain_content.content + | b64decode }}"
     state: present
   when: not ansible_check_mode
