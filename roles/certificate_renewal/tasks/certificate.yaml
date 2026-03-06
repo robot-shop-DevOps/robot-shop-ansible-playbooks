@@ -34,3 +34,4 @@
     secret_name: "{{ azure_vault_certificate_name }}"
     secret_value: "{{ lookup('file', certificate_dir + '/' + certificate_name) }}"
     state: present
+  when: not ansible_check_mode
