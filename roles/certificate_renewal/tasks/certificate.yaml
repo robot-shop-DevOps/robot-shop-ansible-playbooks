@@ -1,18 +1,3 @@
-- name: Get certificate (dry run)
-  ansible.builtin.command:
-    cmd: >
-      certbot certonly 
-      --csr {{ certificate_dir }}/{{ csr_file_name }} 
-      --webroot
-      --webroot-path {{ webroot_path }}
-      --dry-run
-      --non-interactive
-      --config-dir {{ certbot_config_dir }}
-      --work-dir {{ certbot_work_dir }}
-      --logs-dir {{ certbot_logs_dir }}
-  check_mode: false
-  when: ansible_check_mode
-
 - name: Get Certificate
   ansible.builtin.command:
     cmd: >
@@ -27,6 +12,7 @@
       --config-dir {{ certbot_config_dir }}
       --work-dir {{ certbot_work_dir }}
       --logs-dir {{ certbot_logs_dir }}
+  creates: "{{ certificate_dir }}/{{ certificate_name }}"
 
 - name: Export certificate to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
