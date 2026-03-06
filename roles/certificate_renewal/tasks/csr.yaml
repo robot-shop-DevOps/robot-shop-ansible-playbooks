@@ -1,0 +1,15 @@
+- name: Create CSR config from template
+  ansible.builtin.template:
+    src: csr_config.j2
+    dest: "{{ certificate_dir }}/{{ csr_config_file_name }}"
+    mode: 0644
+
+- name: Create CSR file
+  ansible.builtin.command:
+    cmd: >
+      openssl req -new 
+      -key {{ certificate_dir }}/{{ private_key_name }} 
+      -out {{ certificate_dir }}/{{ csr_file_name }} 
+      -config {{ certificate_dir }}/{{ csr_config_file_name }}
+  args:
+    creates: "{{ certificate_dir }}/{{ csr_file_name }}"

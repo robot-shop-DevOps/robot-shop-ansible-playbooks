@@ -1,1 +1,7 @@
 certbot_channel: "latest/stable"
+
+certbot_config_dir: "/tmp/certbot_automation/config/"
+certbot_work_dir: "/tmp/certbot_automation/work/"
+certbot_logs_dir: "/tmp/certbot_automation/logs/"
+
+acme_account_email: "shashankpalla44@gmail.com"

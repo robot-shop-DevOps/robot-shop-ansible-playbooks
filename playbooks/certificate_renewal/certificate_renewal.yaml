@@ -1,0 +1,6 @@
+- name: Renew Certificates
+  hosts: certificate_renewal
+  become: true
+  roles:
+    - certbot
+    - certificate_renewal

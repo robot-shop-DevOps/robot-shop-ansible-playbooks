@@ -1,0 +1,11 @@
+default_bits: 2048
+
+azure_key_vault_uri: https://sslcertificates0205.vault.azure.net/
+
+certbot_config_dir: "/tmp/certbot_automation/config/"
+certbot_work_dir: "/tmp/certbot_automation/work/"
+certbot_logs_dir: "/tmp/certbot_automation/logs/"
+
+certificate_dir: /tmp/certbot_automation/certificates
+
+webroot_path: /usr/local/openresty/nginx/conf/lua

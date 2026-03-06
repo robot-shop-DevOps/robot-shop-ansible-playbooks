@@ -1,0 +1,4 @@
+- import_tasks: dependencies.yaml
+- import_tasks: private_key.yaml
+- import_tasks: csr.yaml
+- import_tasks: certificate.yaml

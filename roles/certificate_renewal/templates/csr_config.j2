@@ -1,0 +1,21 @@
+[ req ]
+default_bits       = {{ default_bits }}
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+prompt             = no
+
+[ req_distinguished_name ]
+C  = IN
+ST = Telangana
+L  = Hyderabad
+O  = Robot Shop
+OU = DevOps
+CN = {{ CN }}
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+{% for domain in san_domains -%}
+DNS.{{ loop.index }} = {{ domain }}
+{% endfor -%}
