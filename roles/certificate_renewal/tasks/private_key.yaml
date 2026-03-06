@@ -11,11 +11,16 @@
   register: private_key_content
   when: not ansible_check_mode
 
-- name: Show python interpreter
-  debug:
-    var: ansible_python_interpreter
-  delegate_to: localhost
-  run_once: true
+- name: Debug Python environment
+  run: |
+    echo "Python path:"
+    which python3
+
+    echo "Python version:"
+    python3 --version
+
+    echo "Installed Azure libraries:"
+    python3 -m pip list | grep -E "azure|msrest"
 
 - name: Export private key to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
