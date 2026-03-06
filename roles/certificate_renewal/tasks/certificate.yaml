@@ -12,8 +12,6 @@
       --config-dir {{ certbot_config_dir }}
       --work-dir {{ certbot_work_dir }}
       --logs-dir {{ certbot_logs_dir }}
-    args:
-      creates: "{{ certificate_dir }}/{{ certificate_name }}"
 
 - name: Export certificate to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
