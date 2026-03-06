@@ -49,7 +49,7 @@ on:
 
 jobs:
   deploy:
-    uses: robot-shop-DevOps/robot-shop-github-actions/.github/workflows/ansible-playbooks.yaml@main
+    uses: robot-shop-DevOps/robot-shop-github-actions/.github/workflows/ansible-playbooks.yaml@composite-actions
     with:
       CLOUD_PROVIDER: ${{ github.event.inputs.CLOUD_PROVIDER }}
       ENVIRONMENT: ${{ github.event.inputs.ENVIRONMENT }}
