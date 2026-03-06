@@ -38,6 +38,8 @@
     secret_value: "{{ cert_content.content + | b64decode }}"
     state: present
   delegate_to: localhost
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   run_once: true
   when: not ansible_check_mode
 
@@ -48,6 +50,8 @@
     secret_value: "{{ fullchain_content.content + | b64decode }}"
     state: present
   delegate_to: localhost
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   run_once: true
   when: not ansible_check_mode
 
@@ -58,5 +62,7 @@
     secret_value: "{{ chain_content.content + | b64decode }}"
     state: present
   delegate_to: localhost
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   run_once: true
   when: not ansible_check_mode
