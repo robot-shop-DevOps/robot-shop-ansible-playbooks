@@ -34,4 +34,3 @@
     secret_name: "{{ azure_vault_certificate_name }}"
     secret_value: "{{ lookup('file', certificate_dir + '/' + certificate_name) }}"
     state: present
-  no_log: true
