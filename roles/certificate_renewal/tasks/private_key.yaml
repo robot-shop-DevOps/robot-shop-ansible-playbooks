@@ -5,10 +5,16 @@
     creates: "{{ certificate_dir }}/{{ private_key_name }}"
   register: command_output
 
+- name: Read private key
+  ansible.builtin.slurp:
+    src: "{{ certificate_dir }}/{{ private_key_name }}"
+  register: private_key_content
+  when: not ansible_check_mode
+
 - name: Export private key to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
     secret_name: "{{ azure_vault_private_key_name }}"
-    secret_value: "{{ lookup('file', certificate_dir + '/' + private_key_name) }}"
+    secret_value: "{{ private_key_content.content | b64decode }}"
     state: present
   when: not ansible_check_mode
