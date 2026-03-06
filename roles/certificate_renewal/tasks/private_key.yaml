@@ -17,4 +17,6 @@
     secret_name: "{{ azure_vault_private_key_name }}"
     secret_value: "{{ private_key_content.content | b64decode }}"
     state: present
+  delegate_to: localhost
+  run_once: true
   when: not ansible_check_mode
