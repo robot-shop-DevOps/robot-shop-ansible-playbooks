@@ -17,16 +17,19 @@
   ansible.builtin.slurp:
     src: "{{ certificate_dir }}/{{ certificate_name }}"
   register: cert_content
+  when: not ansible_check_mode
 
 - name: Read fullchain
   ansible.builtin.slurp:
     src: "{{ certificate_dir }}/{{ fullchain_name }}"
   register: fullchain_content
+  when: not ansible_check_mode
 
 - name: Read chain
   ansible.builtin.slurp:
     src: "{{ certificate_dir }}/{{ certificate_name }}"
   register: chain_content
+  when: not ansible_check_mode
 
 - name: Export certificate to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:

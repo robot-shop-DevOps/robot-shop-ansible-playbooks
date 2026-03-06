@@ -9,6 +9,7 @@
   ansible.builtin.slurp:
     src: "{{ certificate_dir }}/{{ private_key_name }}"
   register: private_key_content
+  when: not ansible_check_mode
 
 - name: Export private key to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
