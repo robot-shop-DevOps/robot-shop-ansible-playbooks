@@ -2,7 +2,6 @@
   ansible.builtin.stat:
     path: "{{ certbot_config_dir }}/accounts"
   register: acme_accounts
-  when: not ansible_check_mode
   tags:
     - acme_register
 
@@ -15,6 +14,6 @@
       --config-dir {{ certbot_config_dir }}
       --work-dir {{ certbot_work_dir }}
       --logs-dir {{ certbot_logs_dir }}
-  when: not acme_accounts.stat.exists and not ansible_check_mode
+  when: not acme_accounts.stat.exists
   tags:
     - acme_register
