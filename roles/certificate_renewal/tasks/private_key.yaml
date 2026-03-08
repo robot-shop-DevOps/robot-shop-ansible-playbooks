@@ -19,6 +19,6 @@
     state: present
   delegate_to: localhost
   vars:
-    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    ansible_python_interpreter: /opt/ansible-venv/bin/python
   run_once: true
   when: not ansible_check_mode
