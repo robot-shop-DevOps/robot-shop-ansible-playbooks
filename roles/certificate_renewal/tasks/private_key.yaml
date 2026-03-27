@@ -11,6 +11,14 @@
   register: private_key_content
   when: not ansible_check_mode
 
+- name: Debug Azure credentials
+  debug:
+    msg:
+      - "CLIENT_ID={{ lookup('env','AZURE_CLIENT_ID') }}"
+      - "TENANT={{ lookup('env','AZURE_TENANT') }}"
+      - "SUB={{ lookup('env','AZURE_SUBSCRIPTION_ID') }}"
+  delegate_to: localhost
+
 - name: Export private key to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
