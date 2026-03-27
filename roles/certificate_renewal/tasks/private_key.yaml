@@ -26,17 +26,17 @@
     secret_value: "{{ private_key_content.content | b64decode }}"
     state: present
     auth_source: env
-    client_id: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
-    secret: "{{ lookup('env', 'AZURE_SECRET') }}"
-    tenant: "{{ lookup('env', 'AZURE_TENANT') }}"
-    subscription_id: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+    # client_id: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    # secret: "{{ lookup('env', 'AZURE_SECRET') }}"
+    # tenant: "{{ lookup('env', 'AZURE_TENANT') }}"
+    # subscription_id: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
   delegate_to: localhost
   vars:
     ansible_python_interpreter: /home/GitHubActions/ansible-venv/bin/python
   run_once: true
   when: not ansible_check_mode
-  environment:
-    AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
-    AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
-    AZURE_TENANT: "{{ lookup('env', 'AZURE_TENANT') }}"
-    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+  # environment:
+  #   AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+  #   AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
+  #   AZURE_TENANT: "{{ lookup('env', 'AZURE_TENANT') }}"
+  #   AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"

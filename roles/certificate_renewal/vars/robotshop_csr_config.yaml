@@ -13,4 +13,4 @@ fullchain_name: "robotshopappin_fullchain.pem"
 CN: "robotshopapp.in"
 
 san_domains:
-  - DNS_1: "robotshopapp.in"
+  - "robotshopapp.in"
