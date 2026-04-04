@@ -19,9 +19,6 @@
     state: present
     auth_source: env
   delegate_to: localhost
-  # vars:
-  #   ansible_python_interpreter: /home/GitHubActions/ansible-venv/bin/python
-  run_once: true
   when: not ansible_check_mode
   environment:
     AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"

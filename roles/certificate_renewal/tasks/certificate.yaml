@@ -35,28 +35,43 @@
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
     secret_name: "{{ azure_vault_certificate_name }}"
-    secret_value: "{{ cert_content.content + | b64decode }}"
+    secret_value: "{{ cert_content.content | b64decode }}"
     state: present
+    auth_source: env
   delegate_to: localhost
-  run_once: true
   when: not ansible_check_mode
+  environment:
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
+    AZURE_TENANT: "{{ lookup('env', 'AZURE_TENANT') }}"
+    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
 
 - name: Export fullchain to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
     secret_name: "{{ azure_vault_fullchain_name }}"
-    secret_value: "{{ fullchain_content.content + | b64decode }}"
+    secret_value: "{{ fullchain_content.content | b64decode }}"
     state: present
+    auth_source: env
   delegate_to: localhost
-  run_once: true
   when: not ansible_check_mode
+  environment:
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
+    AZURE_TENANT: "{{ lookup('env', 'AZURE_TENANT') }}"
+    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
 
 - name: Export chain to azure vault
   azure.azcollection.azure_rm_keyvaultsecret:
     keyvault_uri: "{{ azure_key_vault_uri }}"
     secret_name: "{{ azure_vault_chain_name }}"
-    secret_value: "{{ chain_content.content + | b64decode }}"
+    secret_value: "{{ chain_content.content | b64decode }}"
     state: present
+    auth_source: env
   delegate_to: localhost
-  run_once: true
   when: not ansible_check_mode
+  environment:
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
+    AZURE_TENANT: "{{ lookup('env', 'AZURE_TENANT') }}"
+    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
