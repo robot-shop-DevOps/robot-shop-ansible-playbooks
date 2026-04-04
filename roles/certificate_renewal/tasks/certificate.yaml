@@ -1,3 +1,12 @@
+- name: Remove existing certificates
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ certificate_dir }}/{{ certificate_name }}"
+    - "{{ certificate_dir }}/{{ chain_name }}"
+    - "{{ certificate_dir }}/{{ fullchain_name }}"
+
 - name: Get Certificate
   ansible.builtin.command:
     cmd: >
