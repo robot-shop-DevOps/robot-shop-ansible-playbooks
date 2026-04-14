@@ -1,7 +1,7 @@
 azure_vault_private_key_name: "robotshopappinkey"
-azure_vault_certificate_name: "robotshopappin_cert"
-azure_vault_fullchain_name: "robotshopappin_fullchain"
-azure_vault_chain_name: "robotshopappin_chain"
+azure_vault_certificate_name: "robotshopappincert"
+azure_vault_fullchain_name: "robotshopappinfullchain"
+azure_vault_chain_name: "robotshopappinchain"
 
 private_key_name: "robotshopappin.key"
 csr_file_name: "robotshopappin_csr"
@@ -13,4 +13,4 @@ fullchain_name: "robotshopappin_fullchain.pem"
 CN: "robotshopapp.in"
 
 san_domains:
-  - DNS_1: "robotshopapp.in"
+  - "robotshopapp.in"
