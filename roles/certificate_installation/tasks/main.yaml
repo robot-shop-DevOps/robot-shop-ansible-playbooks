@@ -28,7 +28,7 @@
 - name: Copy private key to nginx server
   ansible.builtin.copy:
     content: "{{ privatekey }}"
-    dest: "{{ nginx_cert_path }}"
+    dest: "{{ nginx_private_key_path }}"
     owner: root
     group: root
     mode: '0600'
