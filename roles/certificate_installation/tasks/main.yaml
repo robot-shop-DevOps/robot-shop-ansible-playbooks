@@ -24,6 +24,7 @@
     group: root
     mode: '0600'
   notify: reload openresty
+  no_log: true
 
 - name: Copy private key to nginx server
   ansible.builtin.copy:
@@ -33,3 +34,4 @@
     group: root
     mode: '0600'
   notify: reload openresty
+  no_log: true
