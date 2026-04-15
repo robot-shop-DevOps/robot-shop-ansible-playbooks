@@ -1,6 +1,6 @@
 - name: Get certificate from azure vault
   ansible.builtin.set_fact:
-    fullchain: "{{ lookup('azure.azcollection.azure_keyvault_secret', azure_vault_fullchain_name, keyvault_uri=azure_key_vault_uri, auth_source='env') }}"
+    fullchain: "{{ lookup('azure.azcollection.azure_keyvault_secret', azure_vault_fullchain_name, vault_url=azure_key_vault_uri, auth_source='env') }}"
   environment:
     AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
     AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
