@@ -46,6 +46,7 @@ on:
           - openresty
           - certbot
           - certificate_renewal
+          - certificate_installation
 
 jobs:
   deploy:

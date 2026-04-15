@@ -1,0 +1,3 @@
+azure_key_vault_uri: 'https://sslcertificates0205.vault.azure.net/'
+nginx_cert_path: '/usr/local/openresty/nginx/conf/certs/robotshopappinfullchain.pem'
+nginx_private_key_path: '/usr/local/openresty/nginx/conf/certs/robotshopappinkey.pem'

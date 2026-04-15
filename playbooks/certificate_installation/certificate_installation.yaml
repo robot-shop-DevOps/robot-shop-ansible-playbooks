@@ -1,0 +1,5 @@
+- name: Install Certificates
+  hosts: certificate_installation
+  become: true
+  roles:
+    - certificate_installation

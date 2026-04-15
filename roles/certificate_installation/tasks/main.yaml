@@ -1,0 +1,37 @@
+- name: Get certificate from azure vault
+  ansible.builtin.set_fact:
+    fullchain: "{{ lookup('azure.azcollection.azure_keyvault_secret', azure_vault_fullchain_name, vault_url=azure_key_vault_uri, auth_source='env') }}"
+  environment:
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
+    AZURE_TENANT: "{{ lookup('env', 'AZURE_TENANT') }}"
+    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+
+- name: Get private key from azure vault
+  ansible.builtin.set_fact:
+    privatekey: "{{ lookup('azure.azcollection.azure_keyvault_secret', azure_vault_private_key_name, vault_url=azure_key_vault_uri, auth_source='env') }}"
+  environment:
+    AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
+    AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
+    AZURE_TENANT: "{{ lookup('env', 'AZURE_TENANT') }}"
+    AZURE_SUBSCRIPTION_ID: "{{ lookup('env', 'AZURE_SUBSCRIPTION_ID') }}"
+
+- name: Copy certificate to nginx server
+  ansible.builtin.copy:
+    content: "{{ fullchain }}"
+    dest: "{{ nginx_cert_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+  notify: reload openresty
+  no_log: true
+
+- name: Copy private key to nginx server
+  ansible.builtin.copy:
+    content: "{{ privatekey }}"
+    dest: "{{ nginx_private_key_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+  notify: reload openresty
+  no_log: true
