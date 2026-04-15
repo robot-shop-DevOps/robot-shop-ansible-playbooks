@@ -9,7 +9,7 @@
 
 - name: Get private key from azure vault
   ansible.builtin.set_fact:
-    privatekey: "{{ lookup('azure.azcollection.azure_keyvault_secret', azure_vault_private_key_name, keyvault_uri=azure_key_vault_uri, auth_source='env') }}"
+    privatekey: "{{ lookup('azure.azcollection.azure_keyvault_secret', azure_vault_private_key_name, vault_url=azure_key_vault_uri, auth_source='env') }}"
   environment:
     AZURE_CLIENT_ID: "{{ lookup('env', 'AZURE_CLIENT_ID') }}"
     AZURE_SECRET: "{{ lookup('env', 'AZURE_SECRET') }}"
