@@ -21,3 +21,7 @@ certbot:
 certificate_renewal:
   hosts:
     WebServer:
+
+certificate_installation:
+  hosts:
+    WebServer:

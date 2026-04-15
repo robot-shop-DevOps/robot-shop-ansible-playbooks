@@ -1,0 +1,6 @@
+# Python dependencies for ansible galaxy modules
+azure-identity
+azure-mgmt-keyvault
+azure-keyvault-secrets
+msrest
+msrestazure
