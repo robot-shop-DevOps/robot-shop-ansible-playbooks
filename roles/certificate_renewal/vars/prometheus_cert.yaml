@@ -1,6 +1,6 @@
 azure_vault_private_key_name: "prometheuskey"
 azure_vault_certificate_name: "prometheuscert"
-azure_vault_fullchain_name: "prometheuschain"
+azure_vault_fullchain_name: "prometheusfullchain"
 azure_vault_chain_name: "prometheuschain"
 
 private_key_name: "prometheus.key"
