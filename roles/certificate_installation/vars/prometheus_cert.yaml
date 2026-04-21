@@ -1,0 +1,2 @@
+azure_vault_private_key_name: "prometheuskey"
+azure_vault_fullchain_name: "prometheusfullchain"
